@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Tra cứu biển số xe Việt Nam</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .container {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        color: #333;
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      .search-container {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      select {
+        padding: 10px;
+        font-size: 16px;
+        width: 300px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+      .result-container {
+        margin-top: 20px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        display: none;
+      }
+      .result-container.active {
+        display: block;
+      }
+      .city-name {
+        font-size: 18px;
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 10px;
+      }
+      .plate-numbers {
+        font-size: 16px;
+        color: #34495e;
+        line-height: 1.6;
+      }
+      .error {
+        color: #e74c3c;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Creating a sever with Node.js</h1>
+      <p style="text-align: center">
+        Hello, I'm a Node.js sever for searching vehicle plate number!
+      </p>
+      <div class="search-container">
+        <select id="citySelect">
+          <option value="">-- Chọn tỉnh/thành phố --</option>
+        </select>
+      </div>
+
+      <div id="resultContainer" class="result-container">
+        <div class="city-name" id="cityName"></div>
+        <div class="plate-numbers" id="plateNumbers"></div>
+      </div>
+    </div>
+
+    <script>
+      async function loadCities() {
+        try {
+          const response = await fetch("/api/cities");
+          const cities = await response.json();
+          const select = document.getElementById("citySelect");
+
+          cities.sort().forEach((city) => {
+            const option = document.createElement("option");
+            option.value = city;
+            option.textContent = city;
+            select.appendChild(option);
+          });
+        } catch (error) {
+          console.error("Lỗi khi tải danh sách tỉnh thành:", error);
+        }
+      }
+
+      async function getPlateInfo(city) {
+        try {
+          const response = await fetch(
+            `/api/plates/${encodeURIComponent(city)}`
+          );
+          const plateInfo = await response.json();
+          displayResults(plateInfo);
+        } catch (error) {
+          console.error("Lỗi khi tải thông tin biển số:", error);
+        }
+      }
+
+      function displayResults(plateInfo) {
+        const resultContainer = document.getElementById("resultContainer");
+        const cityNameElement = document.getElementById("cityName");
+        const plateNumbersElement = document.getElementById("plateNumbers");
+
+        if (plateInfo.error) {
+          resultContainer.style.display = "none";
+          return;
+        }
+
+        cityNameElement.textContent = `Tỉnh/Thành phố: ${plateInfo.city}`;
+        plateNumbersElement.textContent = `Biển số: ${plateInfo.plate_no}`;
+        resultContainer.style.display = "block";
+      }
+
+      document.getElementById("citySelect").addEventListener("change", (e) => {
+        if (e.target.value) {
+          getPlateInfo(e.target.value);
+        } else {
+          document.getElementById("resultContainer").style.display = "none";
+        }
+      });
+
+      // Load danh sách tỉnh thành khi trang được tải
+      loadCities();
+    </script>
+  </body>
+</html>
