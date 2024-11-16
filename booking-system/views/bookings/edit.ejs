@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chỉnh sửa đặt chỗ</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Chỉnh sửa đặt chỗ</h1>
+      <form
+        id="editBookingForm"
+        class="booking-form"
+        data-booking-id="<%= booking.id %>"
+      >
+        <div class="form-group">
+          <label>Tên khách hàng:</label>
+          <input
+            type="text"
+            name="customerName"
+            value="<%= booking.customerName %>"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label>Ngày:</label>
+          <input
+            type="date"
+            name="date"
+            value="<%= booking.date %>"
+            required
+            min="<%= new Date().toISOString().split('T')[0] %>"
+          />
+        </div>
+        <div class="form-group">
+          <label>Giờ:</label>
+          <input type="time" name="time" value="<%= booking.time %>" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Cập nhật</button>
+        <a href="/bookings" class="btn btn-secondary">Quay lại</a>
+      </form>
+    </div>
+    <script src="/js/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Danh sách đặt chỗ</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Danh sách đặt chỗ</h1>
+      <a href="/bookings/create" class="btn btn-primary">Đặt chỗ mới</a>
+
+      <table class="booking-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Tên khách hàng</th>
+            <th>Ngày</th>
+            <th>Giờ</th>
+            <th>Trạng thái</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% bookings.forEach(booking => { %>
+          <tr class="status-<%= booking.status.toLowerCase() %>">
+            <td><%= booking.id %></td>
+            <td><%= booking.customerName %></td>
+            <td><%= booking.date %></td>
+            <td><%= booking.time %></td>
+            <td><%= booking.status %></td>
+            <td>
+              <% if (booking.status !== 'Cancelled') { %>
+              <a href="/bookings/<%= Booking.id %>/edit" class="btn btn-edit"
+                >Sửa</a
+              >
+              <button
+                onclick="cancelBooking('<%= Booking.id %>')"
+                class="btn btn-cancel"
+              >
+                Hủy
+              </button>
+              <% } %>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+    <script src="/js/main.js"></script>
+  </body>
+</html>
